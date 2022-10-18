@@ -2,6 +2,7 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import Container from 'react-bootstrap/Container'
 import AddTodo from '../components/AddTodo'
+import TodoList from '../components/TodoList'
 
 const Home = () => {
     const [todos, setTodos] = useState()
@@ -19,8 +20,15 @@ const Home = () => {
         setTodos(data)
     }
     //& create işlemi için
-    const postTodo = async (todo) => {
-        await axios.post(url, todo)
+    const postTodo = async (item) => {
+        await axios.post(url, item)
+        //   setTodos([...todos,item])
+        getTodos()
+    }
+
+    //? delete işlemi için
+    const deleteTodo = async (id) => {
+        await axios.delete(`${url}${id}`)
         getTodos()
     }
     useEffect(() => {
@@ -28,11 +36,9 @@ const Home = () => {
     }, [])
 
     return (
-        <Container>
-            {
-                todos?.map(item => <h1 key={item.id}>{item.todo}</h1>)
-            }
+        <Container className="mt-4">
             <AddTodo postTodo={postTodo} />
+            <TodoList todos={todos} deleteTodo={deleteTodo} />
         </Container>
     )
 }
